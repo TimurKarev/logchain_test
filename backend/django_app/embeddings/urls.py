@@ -1,6 +1,6 @@
 from django.urls import path
-from .rests import some_view
+from .rests import EmbeddingsRest
 
 urlpatterns = [
-    path('', some_view),
+    path('', EmbeddingsRest.as_view()),
     ]

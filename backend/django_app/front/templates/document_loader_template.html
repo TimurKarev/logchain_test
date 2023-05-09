@@ -1,0 +1,10 @@
+{% block content %}
+    <h1>Document Loading Page</h1>
+    <form enctype="multipart/form-data" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Encode">
+    </form>
+    <br>
+    {% if status %}<p>Status: {{ status }}</p>{% endif %}
+{% endblock %}
