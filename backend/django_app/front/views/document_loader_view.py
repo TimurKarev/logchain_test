@@ -3,8 +3,15 @@ from django.shortcuts import render
 from django.views.generic.base import TemplateView
 
 from front.forms.upload_file_form import UploadFileForm
+from langchain.indexes import VectorstoreIndexCreator
+from langchain.text_splitter import CharacterTextSplitter
+from langchain.embeddings.openai import OpenAIEmbeddings
+from langchain.vectorstores import Chroma
+from langchain.docstore.document import Document
+
 
 from django_app.services.embeddings import get_embeddings
+
 
 class DocumentLoaderView(TemplateView):
     template_name = 'document_loader_template.html'
@@ -18,10 +25,14 @@ class DocumentLoaderView(TemplateView):
         if doc_file:
             try:
                 text = docx2txt.process(doc_file)
-                embedding = get_embeddings(post_txt=text)
-                
-                
-                status = 'Success: File uploaded.'
+                documents = [Document(
+                    page_content=text,
+                )]
+                index = VectorstoreIndexCreator().from_documents(documents)
+
+                query = "Give name to this document"
+
+                status = index.query_with_sources(query)
             except Exception as e:
                 text = ''
                 status = f'Error: {e}'
